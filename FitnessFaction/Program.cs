@@ -31,10 +31,18 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapControllerRoute(
+   name: "SwitchFeedType",
+   pattern: "Home/SwitchFeed",
+   defaults: new { controller = "Home", action = "SwitchFeed" }
+ );
+
+app.MapControllerRoute(
    name: "Home",
    pattern: "Home/{username}",
-   defaults: new { controller = "Home", action = "HomeFeed" }
+   defaults: new { controller = "Home", action = "HomeFeed"}
  );
+
+
 
 app.MapControllerRoute(
               name: "Error",

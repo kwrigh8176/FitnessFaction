@@ -18,12 +18,13 @@ namespace FitnessFaction.Controllers
         {
 
             //check if the credentials are valid
-            if (userDatabase.userLoginCredentialsValid(username, password))
+            if (MongoDatabaseConnection.userLoginCredentialsValid(username, password))
             {
 
                 //store the current username in the session
                 HttpContext.Session.SetString("username", username);
 
+                HttpContext.Session.SetString("feedType", "following");
                 //redirct to the home feed
                 return Redirect("/Home/" + username);
             }
@@ -59,12 +60,12 @@ namespace FitnessFaction.Controllers
                valid = false;
             }
 
-            if (userDatabase.userCredentialsValid(email, username) && valid)
+            if (MongoDatabaseConnection.userCredentialsValid(email, username) && valid)
             {
                 //if valid log them in
                 //(redirect to profile page for now)
                 ViewBag.Message = "Credentials accepted!, Login!";
-                userDatabase.postUserSignUpCredentials(email, username, password);
+                MongoDatabaseConnection.postUserSignUpCredentials(email, username, password);
 
                 return View("Login");
             }

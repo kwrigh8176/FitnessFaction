@@ -36,7 +36,7 @@ namespace FitnessFaction
     }
 
     //going to hold specific user attributes
-    public class UserSettings
+    public class Posts
     {
 
 

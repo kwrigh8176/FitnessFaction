@@ -11,14 +11,16 @@ namespace FitnessFaction.Models
     {
         public string Id { get; set; }
 
-        [StringLength(30)]
+        [StringLength(50)]
         public string Email { get; set; }
 
-        [StringLength(20)]
+        [StringLength(40)]
         public string UserName { get; set; }
 
         [StringLength(20)]
         public string Password { get; set; }
+
+        public string FollowedAccounts { get; set; }
 
     }
 }

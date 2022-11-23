@@ -1,25 +1,31 @@
-﻿using MongoDB.Driver;
+﻿using FitnessFaction.Database;
+using MongoDB.Driver;
+using System.Security.Cryptography;
 
 namespace FitnessFaction
 {
-    public class userDatabase
+    public class MongoDatabaseConnection
     {
         //connection to the database clusters
-        public static string cluster_url = "mongodb+srv://FitnessFactionAdmin:BX0jNkpLw7la1Ys3@fitnessfaction.1awhqcy.mongodb.net/?retryWrites=true&w=majority";
+        private static string cluster_url = "mongodb+srv://FitnessFactionAdmin:BX0jNkpLw7la1Ys3@fitnessfaction.1awhqcy.mongodb.net/?retryWrites=true&w=majority";
 
         //Database handling all the user info is named "User"
-        public static string databaseName = "User";
-        public userDatabase()
+        private static string databaseName = "User";
+
+        SHA256 mySHA256 = SHA256.Create();
+        public MongoDatabaseConnection()
         {
 
         }
 
-        //inserts all the user credentials into the UserInfo database if valid
+        //add user credentials when signing up
         public static void postUserSignUpCredentials(string email, string username, string password)
         {
             //create a connection to the MongoDB database
             MongoClient dbClient = new MongoClient(cluster_url);
-            
+
+            string encryptedPassword;
+
             //insert the credentials the user entered into the database
             dbClient.GetDatabase(databaseName).GetCollection<userSignUpObject>("UserInfo").InsertOne(new userSignUpObject
             {
@@ -30,7 +36,8 @@ namespace FitnessFaction
 
                 
             });
-
+            AzureRDBMS_Connection temp = new AzureRDBMS_Connection(username);
+            temp.addUser(email, username);
         }
 
         //checks to see if the sign up credentials are valid
