@@ -1,6 +1,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Server.IISIntegration;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
 builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme);
+
+builder.Services.AddRazorPages();
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>
 
 var app = builder.Build();
 
@@ -26,6 +30,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
@@ -60,3 +65,4 @@ app.MapControllerRoute(
 
 
 app.Run();
+
