@@ -7,10 +7,10 @@ namespace FitnessFaction
     public class MongoDatabaseConnection
     {
         //connection to the database clusters
-        private static string cluster_url = "mongodb+srv://FitnessFactionAdmin:BX0jNkpLw7la1Ys3@fitnessfaction.1awhqcy.mongodb.net/?retryWrites=true&w=majority";
+        private readonly static string cluster_url = "mongodb+srv://FitnessFactionAdmin:BX0jNkpLw7la1Ys3@fitnessfaction.1awhqcy.mongodb.net/?retryWrites=true&w=majority";
 
         //Database handling all the user info is named "User"
-        private static string databaseName = "User";
+        private readonly static string databaseName = "User";
 
         SHA256 mySHA256 = SHA256.Create();
         public MongoDatabaseConnection()
