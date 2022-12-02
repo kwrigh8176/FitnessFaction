@@ -1,5 +1,6 @@
 ﻿using FitnessFaction.Database;
 using MongoDB.Driver;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace FitnessFaction
@@ -8,7 +9,7 @@ namespace FitnessFaction
     {
         //connection to the database clusters
         private readonly static string cluster_url = "mongodb+srv://FitnessFactionAdmin:BX0jNkpLw7la1Ys3@fitnessfaction.1awhqcy.mongodb.net/?retryWrites=true&w=majority";
-
+        
         //Database handling all the user info is named "User"
         private readonly static string databaseName = "User";
 
@@ -36,12 +37,12 @@ namespace FitnessFaction
 
                 
             });
-            AzureRDBMS_Connection temp = new AzureRDBMS_Connection(username);
+            AzureRDBMS_Connection temp = new AzureRDBMS_Connection();
             temp.addUser(email, username);
         }
 
         //checks to see if the sign up credentials are valid
-        public static bool userCredentialsValid(string email, string username)
+        public static string userCredentialsValid(string email, string username)
         {
             //connect to the cluster
             MongoClient dbClient = new MongoClient(cluster_url);
@@ -51,16 +52,21 @@ namespace FitnessFaction
 
             //query the db to see if the credentials have been taken
             var builder = Builders<userSignUpObject>.Filter;
-            var filter = builder.Eq("username", username) &  builder.Eq("email", email);
 
-            //get a count of all the elements that match
-            var condition = collection.Find(filter).ToList().Count();
+            var usernameAndEmail = collection.Find(builder.Eq("username", username) &  builder.Eq("email", email)).ToList().Count();
+            var usernameOnly = collection.Find(builder.Eq("username", username)).ToList().Count();
+            var emailOnly = collection.Find(builder.Eq("email", email)).ToList().Count();
+
 
             //if none are found, then the user entered valid credentials
-            if (condition == 0)
-                return true;
+            if (usernameAndEmail != 0)
+                return "Email and username taken.";
+            else if (usernameOnly != 0)
+                return "Username taken";
+            else if (emailOnly != 0)
+                return "Email taken";
             else
-                return false;
+                return "Credentials ok.";
         }
 
         //checks the user's credentials on login

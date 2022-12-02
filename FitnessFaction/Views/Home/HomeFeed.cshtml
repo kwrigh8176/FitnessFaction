@@ -1,42 +1,77 @@
-﻿
+﻿@model List<Posts>
 @{
     ViewBag.Title = "HomeFeed";
 }
+<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 
 
 
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between position:fixed">
     <p class="navbar-brand">Fitness Faction</p>
     <div class="navbar-nav me-auto" id="navbarNavAltMarkup">
 
-            <a class="nav-item nav-link active mr-sm-2" href="#">Fitness Feed <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link mr-sm-2" href="#">Diet Feed</a>
-            <a class="nav-item nav-link mr-sm-2" href="#">Pricing</a>
-            <a class="nav-item nav-link mr-sm-2" href="#">Stories/Blog</a>
-            <a class="nav-item nav-link mr-sm-2" href="#">Settings</a>
+        @if (ViewData["feedType"].ToString() == "Fitness"){
+            <a class="nav-item nav-link active mr-sm-2" href="@Url.Action("switchFitness","Home")">Fitness Feed <span class="sr-only">(current)</span></a>
+        }
+        else
+        {
+        <a class="nav-item nav-link mr-sm-2" href="@Url.Action("switchFitness","Home")">Fitness Feed <span class="sr-only">(current)</span></a>
+        }
 
-            <!---Change content dependent on the feed type-->
+        @if (ViewData["feedType"].ToString() == "Diet"){
+            <a class="nav-item nav-link mr-sm-2 active" href="@Url.Action("switchDiet","Home")">Diet Feed</a>
+        }
+        else
+        {
+            <a class="nav-item nav-link mr-sm-2 " href="@Url.Action("switchDiet","Home")">Diet Feed</a>
+        }
 
-            @if (ViewData["feedType"].ToString() == "global"){
-                <a href="@Url.Action("SwitchFeed")" class="btn btn-outline-success my-2 my-sm-">View following posts!</a>
-            }
-            else {
-                <a href="@Url.Action("SwitchFeed")" class="btn btn-outline-success my-2 my-sm-">View global posts!</a>
-            }
-            
+        
 
-            
+        <a class="nav-item nav-link mr-sm-2 " href="@Url.Action("createPost","Post", new {username = ViewData["username"].ToString()})">Create Post!</a>
+
+        <a class="nav-item nav-link mr-sm-2" href="#">Settings</a>
+
+        <!---Change content dependent on the feed type-->
+
+        @if (ViewData["globalOrFollow"].ToString() == "global"){
+            <a href="@Url.Action("switchGlobalOrFollow","Home")" class="btn btn-outline-success my-2 my-sm-">View following posts!</a>
+        }
+        else {
+        <a href="@Url.Action("switchGlobalOrFollow","Home")" class="btn btn-outline-success my-2 my-sm-">View global posts!</a>
+        }
+
+        
+
+
     </div>
 </nav>
+<body>
 
-<h2>Feed here</h2>
+@if (Model != null)
+{
+    @foreach (var post in Model)
+    {
+        <div style="border-style: solid; ">
+            @post.UserName<br>
+            @post.PostTitle
+        </div>
+    }
+}
+
+    
+
+
+</body>
+
+</html>
 

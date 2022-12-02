@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.SqlTypes;
 
 namespace FitnessFaction
 {
@@ -33,12 +34,32 @@ namespace FitnessFaction
 
         [BsonElement("enrollmentDate")]
         public DateTime enrollmentDate { get; set; }
+
+        [BsonElement("followedAccounts")]
+        public string followedAccounts {get; set;}
+
     }
 
-    //going to hold specific user attributes
     public class Posts
     {
+        public string UserName { get; set; }
 
+        public string Tags { get; set;}
+
+        public string PostTitle { get; set;}
+
+        public string PostText { get; set;}
+
+        public DateTime PostDate { get; set;}
+
+        public string feedType { get; set;}
+    }
+
+    public class Tags
+    {
+        public string TagName { get; set; }
+
+        public string TagType { get; set; }
 
     }
 }

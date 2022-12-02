@@ -21,8 +21,7 @@ namespace FitnessFaction.Models
         public string userName { get; set; }
 
         public bool dietPost { get; set; }
-
-        public bool foodPost { get; set; }
+        public bool fitnessPost { get; set; }
 
 
     }

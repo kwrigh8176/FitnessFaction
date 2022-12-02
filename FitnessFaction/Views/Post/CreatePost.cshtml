@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "Create a post!";
+}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+
+</head>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+
+@model FitnessFaction.Models.PostModel
+@using (Html.BeginForm("CreatePost", "Post", FormMethod.Post))
+{
+    <div class="container" style="justify-content: center">
+        <h1 style="text-align:center">Fitness Faction!</h1>
+
+        <!---PostTitle field-->
+        <div class="form-outline mb-4">
+            @Html.TextBoxFor(T => T.PostTitle, new { @class = "form-control", id = "postTitle" })
+            <label class="form-label" for="form2Example2">Post Title</label>
+        </div>
+
+        <!---PostTitle field-->
+        <div class="form-outline mb-4">
+            @Html.TextBoxFor(T => T.PostText, new { @class = "form-control", id = "postText" })
+            <label class="form-label" for="form2Example2">Post Text</label>
+        </div>
+
+
+            @Html.CheckBoxFor(T => T.dietPost, new { id = "dietCheckbox" })
+            <label>Diet Post</label>
+            @Html.CheckBoxFor(T => T.fitnessPost, new { id = "fitnessCheckbox" })
+            <label>Fitness Post</label><br>
+
+            <label class="form-label" for="form2Example2">Post Type</label>
+
+
+        <!-- Submit button -->
+        <input type="submit" class="btn btn-primary btn-block mb-4" value="Submit!">
+
+
+
+    </div>
+}
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert("@ViewBag.Message");
+        };
+
+    </script>
+}
+
+<!--Simple script to disable a checkbox when a button is clicked-->
+<script>
+    var fitnessCheckbox = document.querySelector("input[id = fitnessCheckbox]");
+    var dietCheckbox = document.querySelector("input[id = dietCheckbox]");
+
+    var changeFitnessCheckbox = document.getElementById("fitnessCheckbox");
+    var changeDietCheckbox = document.getElementById("dietCheckbox");
+
+    fitnessCheckbox.addEventListener('change', function () {
+        if (this.checked && changeDietCheckbox.checked) {
+            changeDietCheckbox.click();
+        }
+    });
+
+    dietCheckbox.addEventListener('change', function () {
+        if (this.checked && changeFitnessCheckbox.checked) {
+            changeFitnessCheckbox.click()
+        }
+    });
+
+</script>

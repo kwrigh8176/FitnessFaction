@@ -2,7 +2,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Negotiate; 
+using Microsoft.AspNetCore.Server.IIS;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,15 +13,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
 
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
-
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = options.DefaultPolicy;
-});
+builder.Services.AddAuthentication(IISServerDefaults.AuthenticationScheme);
+builder.Services.AddAuthorization();
 
 builder.Services.AddRazorPages();
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>
+
 
 var app = builder.Build();
 
@@ -43,10 +40,17 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapControllerRoute(
-   name: "SwitchFeedType",
-   pattern: "Home/SwitchFeed",
-   defaults: new { controller = "Home", action = "SwitchFeed" }
+   name: "createPost",
+   pattern: "Post/{username}",
+   defaults: new { controller = "Post", action = "CreatePost" }
  );
+
+app.MapControllerRoute(
+   name: "switchAssistant",
+   pattern: "Home/{action}",
+   defaults: new { controller = "Home"}
+ );
+
 
 app.MapControllerRoute(
    name: "Home",

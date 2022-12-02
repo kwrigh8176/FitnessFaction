@@ -23,8 +23,8 @@ namespace FitnessFaction.Controllers
 
                 //store the current username in the session
                 HttpContext.Session.SetString("username", username);
-
-                HttpContext.Session.SetString("feedType", "following");
+                HttpContext.Session.SetString("globalOrFollow", "global");
+                HttpContext.Session.SetString("feedType", "Fit");
                 //redirct to the home feed
                 return Redirect("/Home/" + username);
             }
@@ -39,12 +39,18 @@ namespace FitnessFaction.Controllers
 
         public ActionResult SignUp()
         {
+            ViewData["UsernameStyle"] = "black";
+            ViewData["EmailStyle"] = "black";
+
             return View(new SignUpModel());
         }
 
         [HttpPost]
         public ActionResult SignUp(string email, string username, string password)
         {
+            ViewData["UsernameStyle"] = "black";
+            ViewData["EmailStyle"] = "black";
+
             MailAddress temp;
 
             var valid = true;
@@ -60,7 +66,8 @@ namespace FitnessFaction.Controllers
                valid = false;
             }
 
-            if (MongoDatabaseConnection.userCredentialsValid(email, username) && valid)
+            string credentialVerification = MongoDatabaseConnection.userCredentialsValid(email, username);
+            if (credentialVerification == "Credentials ok." && valid)
             {
                 //if valid log them in
                 //(redirect to profile page for now)
@@ -71,6 +78,19 @@ namespace FitnessFaction.Controllers
             }
             else
             {
+                if (credentialVerification == "Email and username taken.")
+                {
+                    ViewData["UsernameStyle"] = "red";
+                    ViewData["EmailStyle"] = "red";
+                }
+                else if (credentialVerification == "Username taken")
+                {
+                    ViewData["UsernameStyle"] = "red";
+                }
+                else
+                {
+                    ViewData["EmailStyle"] = "red";
+                }
                 ViewBag.Message = "Credentials not accepted!";
                 return View();
             }

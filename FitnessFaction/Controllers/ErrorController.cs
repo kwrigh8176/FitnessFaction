@@ -14,5 +14,10 @@ namespace FitnessFaction.Controllers
         {
             return View();
         }
+
+        public ActionResult ReturnHome()
+        {
+            return Redirect("/Home/" + HttpContext.Session.GetString("username"));
+        }
     }
 }
