@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Create a post!";
 }
 
@@ -21,7 +22,7 @@
 @using (Html.BeginForm("CreatePost", "Post", FormMethod.Post))
 {
     <div class="container" style="justify-content: center">
-        <h1 style="text-align:center">Fitness Faction!</h1>
+        <h1 style="text-align:center">Create a post!</h1>
 
         <!---PostTitle field-->
         <div class="form-outline mb-4">
@@ -31,23 +32,65 @@
 
         <!---PostTitle field-->
         <div class="form-outline mb-4">
-            @Html.TextBoxFor(T => T.PostText, new { @class = "form-control", id = "postText" })
+            @Html.TextAreaFor(T => T.PostText, new { @class = "form-control", id = "postText" })
             <label class="form-label" for="form2Example2">Post Text</label>
         </div>
+        <label>Post Type</label><br>
+
+        @Html.CheckBoxFor(T => T.dietPost, new { id = "dietCheckbox" })
+        <label>Diet Post</label>
+        @Html.CheckBoxFor(T => T.fitnessPost, new { id = "fitnessCheckbox" })
+         <label>Fitness Post</label><br>
 
 
-            @Html.CheckBoxFor(T => T.dietPost, new { id = "dietCheckbox" })
-            <label>Diet Post</label>
-            @Html.CheckBoxFor(T => T.fitnessPost, new { id = "fitnessCheckbox" })
-            <label>Fitness Post</label><br>
+        @Html.TextBoxFor(T => T.Tags, new { @class = "form-control", id = "tagString", style= "display:none"})
 
-            <label class="form-label" for="form2Example2">Post Type</label>
+        <label class="form-label" for="form2Example2">Tags</label>
+        <br>
 
+        <div class="form-outline mb-4" id="fitnessTags" style="display:none">
+            
+            @{
+                int count = 0;
+                var fitnessTags = ViewData["tags"] as List<Tags>;
+                fitnessTags = fitnessTags.Where(t => t.TagType == "Fit").ToList();
+                foreach (var tag in fitnessTags)
+                {
+                        <input type="checkbox" name="@(tag.TagType)" value="@(tag.TagName)"/>
+                        <label>@(tag.TagName)</label>
+                    if (count == 5){
+                        count = 0;
+                            <br />
+                    }
+                    count++;
+                }
+            }
+           
+        </div>
+
+        <div class="form-outline mb-4" id="dietTags" style="display:none">
+            @{
+                int newCount = 0;
+                var dietTags = ViewData["tags"] as List<Tags>;
+                dietTags = dietTags.Where(t => t.TagType == "Diet").ToList();
+                foreach (var tag in dietTags)
+                {
+                         <input type="checkbox" name="@(tag.TagType)" value="@(tag.TagName)"/>
+                         <label>@(tag.TagName)</label>
+                    if (newCount == 5)
+                    {
+                        newCount = 0;
+                            <br />
+                    }
+                    newCount++;
+                }
+            }
+        </div>
 
         <!-- Submit button -->
-        <input type="submit" class="btn btn-primary btn-block mb-4" value="Submit!">
+        <input type="submit" class="btn btn-primary btn-block mb-4" value="Submit Post!">
 
-
+        
 
     </div>
 }
@@ -62,24 +105,103 @@
     </script>
 }
 
-<!--Simple script to disable a checkbox when a button is clicked-->
+<!--Simple script to disable a checkbox when a button is clicked, changes tags displayed too-->
 <script>
-    var fitnessCheckbox = document.querySelector("input[id = fitnessCheckbox]");
-    var dietCheckbox = document.querySelector("input[id = dietCheckbox]");
 
     var changeFitnessCheckbox = document.getElementById("fitnessCheckbox");
     var changeDietCheckbox = document.getElementById("dietCheckbox");
 
-    fitnessCheckbox.addEventListener('change', function () {
+    var dietTags = document.getElementById("fitnessTags");
+    var fitnessTags = document.getElementById("dietTags");
+
+    var dietTagListener = document.querySelectorAll('[name = "Diet"]');
+    var fitTagListener = document.querySelectorAll('[name = "Fit"]');
+
+    var tagList = document.getElementById("tagString");
+
+    changeFitnessCheckbox.addEventListener('change', function () {
+        dietTagListener.forEach(item => {
+            item.checked = false
+        });
+        fitTagListener.forEach(item => {
+            item.checked = false
+        });
         if (this.checked && changeDietCheckbox.checked) {
             changeDietCheckbox.click();
+            dietTags.style = "display:inline;";
+            fitnessTags.style = "display:none;";
+            tagList.value = "";
+           
+
+        }
+        else if (this.checked && !changeDietCheckbox.checked)
+        {
+            dietTags.style = "display:inline;";
+            tagList.value = "";
+        }
+        else
+        {
+            dietTags.style = "display:none;";
         }
     });
 
-    dietCheckbox.addEventListener('change', function () {
+    changeDietCheckbox.addEventListener('change', function () {
+        dietTagListener.forEach(item => {
+            item.checked = false
+        });
+        fitTagListener.forEach(item => {
+            item.checked = false
+        });
+        
         if (this.checked && changeFitnessCheckbox.checked) {
-            changeFitnessCheckbox.click()
+            changeFitnessCheckbox.click();
+            dietTags.style = "display:none;";
+            fitnessTags.style = "display:inline;";
+            tagList.value = "";
+
+        }
+        else if (this.checked && !changeFitnessCheckbox.checked) {
+            fitnessTags.style = "display:inline;";
+            tagList.value = "";
+
+        }
+        else {
+            fitnessTags.style = "display:none;";
         }
     });
+
+    dietTagListener.forEach( d => d.addEventListener('change', function() {
+
+        if (this.checked)
+        {
+            tagList.value += this.value + ";";
+        }
+        else
+        {
+            let newText = tagList.value;
+            newText = newText.replace(this.value + ";","");
+            tagList.value = newText;
+            
+        }
+
+    }));
+   
+    fitTagListener.forEach(d => d.addEventListener('change', function () {
+
+        if (this.checked) {
+            tagList.value += this.value + ";";
+        }
+        else {
+            let newText = tagList.value;
+            newText = newText.replace(this.value + ";", "");
+            tagList.value = newText;
+
+        }
+
+    }));
+
+
+    
+
 
 </script>

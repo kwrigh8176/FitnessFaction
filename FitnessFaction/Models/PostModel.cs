@@ -9,7 +9,6 @@ namespace FitnessFaction.Models
 {
     public class PostModel
     {
-        public string Id { get; set; }
 
         [StringLength(40)]
         public string PostTitle { get; set; }
@@ -23,6 +22,9 @@ namespace FitnessFaction.Models
         public bool dietPost { get; set; }
         public bool fitnessPost { get; set; }
 
+        public string Tags { get; set; } = "";
+
+        public string feedType { get; set; }
 
     }
 }

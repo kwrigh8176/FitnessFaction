@@ -1,4 +1,5 @@
 ﻿using FitnessFaction.Models;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 
@@ -18,8 +19,9 @@ namespace FitnessFaction.Controllers
         {
 
             //check if the credentials are valid
-            if (MongoDatabaseConnection.userLoginCredentialsValid(username, password))
+            if (MongoDatabaseConnection.userLoginCredentialsValid(username.Trim(), password.Trim()))
             {
+                TempData["messages"] = "";
 
                 //store the current username in the session
                 HttpContext.Session.SetString("username", username);
@@ -51,6 +53,11 @@ namespace FitnessFaction.Controllers
             ViewData["UsernameStyle"] = "black";
             ViewData["EmailStyle"] = "black";
 
+
+            string trimmedEmail = email.Trim();
+            string trimmedUsername = username.Trim();
+            string trimmedPassword = password.Trim();
+
             MailAddress temp;
 
             var valid = true;
@@ -65,17 +72,19 @@ namespace FitnessFaction.Controllers
               
                valid = false;
             }
+            
 
-            string credentialVerification = MongoDatabaseConnection.userCredentialsValid(email, username);
+            string credentialVerification = MongoDatabaseConnection.userCredentialsValid(trimmedEmail, trimmedUsername);
             if (credentialVerification == "Credentials ok." && valid)
             {
                 //if valid log them in
                 //(redirect to profile page for now)
                 ViewBag.Message = "Credentials accepted!, Login!";
-                MongoDatabaseConnection.postUserSignUpCredentials(email, username, password);
+                MongoDatabaseConnection.postUserSignUpCredentials(trimmedEmail, trimmedUsername, trimmedPassword);
 
                 return View("Login");
             }
+
             else
             {
                 if (credentialVerification == "Email and username taken.")

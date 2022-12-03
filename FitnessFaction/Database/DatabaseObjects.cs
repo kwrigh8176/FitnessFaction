@@ -53,6 +53,7 @@ namespace FitnessFaction
         public DateTime PostDate { get; set;}
 
         public string feedType { get; set;}
+
     }
 
     public class Tags
@@ -62,4 +63,6 @@ namespace FitnessFaction
         public string TagType { get; set; }
 
     }
+
+
 }

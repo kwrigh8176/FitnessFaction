@@ -1,4 +1,6 @@
-﻿using System.Data.SqlClient;
+﻿using FitnessFaction.Models;
+using Microsoft.VisualBasic.FileIO;
+using System.Data.SqlClient;
 using System.Data.SqlTypes;
 
 namespace FitnessFaction.Database
@@ -62,9 +64,46 @@ namespace FitnessFaction.Database
             connection.Close();
             return posts;
         }
-        public List<Posts> pullTags()
+        public List<Tags> pullTags()
         {
-            return null;
+            connection.Open();
+
+            //command to retrieve all the posts in the post database
+            SqlCommand sql = new SqlCommand("Select TagName, TagType FROM dbo.Tags", connection);
+
+            //initialize the reader so we can read in all the posts
+            SqlDataReader reader = sql.ExecuteReader();
+            List<Tags> tags = new List<Tags>();
+
+            //read all the posts in
+            while (reader.Read())
+            {
+                Tags tag = new Tags();
+                tag.TagName = reader.GetValue(0).ToString().Trim();
+                tag.TagType = reader.GetValue(1).ToString().Trim();
+                tags.Add(tag);
+            }
+
+
+            connection.Close();
+            return tags;
         }
+        public void enterPost(string PostTitle, string PostText, string feedType, string Tags, string username)
+        {
+            connection.Open();
+            SqlCommand sql = new SqlCommand("INSERT INTO dbo.Posts (Username, Tags, PostTitle, PostText, PostDate, feedType) Values (@username, @tags, @postTitle, @postText, @postDate, @feedType);", connection);
+
+            DateTime time = DateTime.Now;
+
+            sql.Parameters.AddWithValue("@username", username);
+            sql.Parameters.AddWithValue("@tags", Tags);
+            sql.Parameters.AddWithValue("@postTitle", PostTitle);
+            sql.Parameters.AddWithValue("@postText", PostText);
+            sql.Parameters.AddWithValue("@postDate", time);
+            sql.Parameters.AddWithValue("@feedType", feedType);
+            sql.ExecuteNonQuery();
+            connection.Close();
+        }
+
     }
 }

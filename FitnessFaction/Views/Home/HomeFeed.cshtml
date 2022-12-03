@@ -51,19 +51,20 @@
         }
 
         
-
+        @Html.Raw(TempData["messages"])
 
     </div>
 </nav>
 <body>
 
+    <!---POSTS ARE DISPLAYED HERE -->
 @if (Model != null)
 {
     @foreach (var post in Model)
     {
         <div style="border-style: solid; ">
-            @post.UserName<br>
-            @post.PostTitle
+            @post.PostTitle<br>
+            @post.PostText
         </div>
     }
 }

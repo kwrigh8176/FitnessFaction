@@ -20,6 +20,7 @@ namespace FitnessFaction.Controllers
         //The main feed is directed through this view
         public ActionResult HomeFeed(string username)
         {
+
             string globalOrFollow = HttpContext.Session.GetString("globalOrFollow");
             ViewData["globalOrFollow"] = globalOrFollow;
 
