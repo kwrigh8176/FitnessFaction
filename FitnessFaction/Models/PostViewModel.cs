@@ -7,7 +7,7 @@ using System.Web;
 
 namespace FitnessFaction.Models
 {
-    public class PostModel
+    public class PostViewModel
     {
 
         [StringLength(40)]
@@ -16,15 +16,10 @@ namespace FitnessFaction.Models
         [StringLength(700)]
         public string PostText { get; set; }
 
-        [StringLength(20)]
-        public string userName { get; set; }
-
         public bool dietPost { get; set; }
         public bool fitnessPost { get; set; }
 
         public string Tags { get; set; } = "";
-
-        public string feedType { get; set; }
-
+        public string pfpURL { get; set; }
     }
 }

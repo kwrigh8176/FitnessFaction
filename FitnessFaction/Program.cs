@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.AspNetCore.Routing.Constraints;
+using FitnessFaction.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +17,9 @@ builder.Services.AddSession();
 builder.Services.AddAuthentication(IISServerDefaults.AuthenticationScheme);
 builder.Services.AddAuthorization();
 
-builder.Services.AddRazorPages();
+builder.Services.AddScoped<AzureRDBMS_Connection, AzureRDBMS_Connection>();
 
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 

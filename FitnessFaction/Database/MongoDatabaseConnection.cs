@@ -1,4 +1,5 @@
 ﻿using FitnessFaction.Database;
+using FitnessFaction.Models;
 using MongoDB.Driver;
 using System.Linq;
 using System.Security.Cryptography;
@@ -20,7 +21,7 @@ namespace FitnessFaction
         }
 
         //add user credentials when signing up
-        public static void postUserSignUpCredentials(string email, string username, string password)
+        public static void postUserSignUpCredentials(SignUpViewModel model)
         {
             //create a connection to the MongoDB database
             MongoClient dbClient = new MongoClient(cluster_url);
@@ -30,15 +31,16 @@ namespace FitnessFaction
             //insert the credentials the user entered into the database
             dbClient.GetDatabase(databaseName).GetCollection<userSignUpObject>("UserInfo").InsertOne(new userSignUpObject
             {
-                Email = email,
-                UserName = username,
-                Password = password,
+                Email = model.Email,
+                UserName = model.UserName,
+                Password = model.Password,
                 enrollmentDate = DateTime.Now
 
                 
             });
             AzureRDBMS_Connection temp = new AzureRDBMS_Connection();
-            temp.addUser(email, username);
+            temp.addUser(model.Email, model.UserName);
+            temp.uploadProfilePicture(model.UserName, model.imageUrl);
         }
 
         //checks to see if the sign up credentials are valid
@@ -92,7 +94,6 @@ namespace FitnessFaction
                 return false;
         }
 
-      
 
         
     }

@@ -9,12 +9,12 @@ namespace FitnessFaction.Controllers
     
     public class HomeController : Controller
     {
-        private AzureRDBMS_Connection RDBMS_Connection = new AzureRDBMS_Connection();
+        private readonly AzureRDBMS_Connection RDBMS_Connection;
         private List<Posts> postList { get; set;}
 
         public HomeController()
         { 
-
+            RDBMS_Connection = new AzureRDBMS_Connection();
         }
 
         //The main feed is directed through this view
@@ -28,6 +28,9 @@ namespace FitnessFaction.Controllers
 
             string feedType = HttpContext.Session.GetString("feedType");
             ViewData["feedType"] = feedType;
+
+            ViewData["profilePic"] = HttpContext.Session.GetString("pfp");
+
             //retrieve posts based on feedType
             if (globalOrFollow == "global")
             {

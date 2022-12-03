@@ -54,6 +54,7 @@ namespace FitnessFaction
 
         public string feedType { get; set;}
 
+        public string pfpURL { get; set; }
     }
 
     public class Tags
@@ -64,5 +65,11 @@ namespace FitnessFaction
 
     }
 
+    public class profilePicture
+    {
+        public string Username { get; set; }
+
+        public string ProfilePicture { get; set; }
+    }
 
 }

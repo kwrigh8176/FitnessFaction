@@ -50,6 +50,8 @@
         <a href="@Url.Action("switchGlobalOrFollow","Home")" class="btn btn-outline-success my-2 my-sm-">View global posts!</a>
         }
 
+
+        <img src="/@ViewData["profilePic"].ToString()" class="nav-item img-thumbnail" width="50px" height="50px" />
         
         @Html.Raw(TempData["messages"])
 
@@ -63,8 +65,10 @@
     @foreach (var post in Model)
     {
         <div style="border-style: solid; ">
-            @post.PostTitle<br>
-            @post.PostText
+            <img src = "/@post.pfpURL" width="50px" height="50px">
+                <p style="padding-left: 70px">@post.PostTitle</p><br>
+                <p style="padding-left: 100px">@post.PostText</p>
+        
         </div>
     }
 }

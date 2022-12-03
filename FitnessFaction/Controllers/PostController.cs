@@ -60,7 +60,7 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
 
             if (checksPassed)
             {
-                azureConnect.enterPost( PostTitle,  PostText, feedType, Tags, userName);
+                azureConnect.enterPost( PostTitle,  PostText, feedType, Tags, userName, HttpContext.Session.GetString("pfp"));
                 TempData["messages"] = "<script>alert('Post succeeded!');</script>";
                 return RedirectToAction("HomeFeed","Home", new {username = userName });
             }
