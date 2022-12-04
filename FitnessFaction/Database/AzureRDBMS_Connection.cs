@@ -125,23 +125,23 @@ namespace FitnessFaction.Database
         public string getProfilePicture(string username)
         {
             connection.Open();
-            SqlCommand sql = new SqlCommand("Select Username, PFP FROM dbo.ProfilePictures", connection);
+            SqlCommand sql = new SqlCommand("Select Username, PFP FROM dbo.ProfilePictures WHERE Username = @username", connection);
             //initialize the reader so we can read in all the posts
             SqlDataReader reader = sql.ExecuteReader();
-
-           
+            sql.Parameters.AddWithValue("@username", username);
+            string imageUrl = "";
             //read all the posts in
             while (reader.Read())
             {
                 
-                if (reader.GetValue(0).ToString() == username)
-                {
-                    string imageUrl = reader.GetValue(1).ToString();
-                    connection.Close();
-                    return imageUrl;
-                }
+                
+               imageUrl = reader.GetValue(1).ToString();
+                    
+                    
+                
             }
-            return "";
+            return imageUrl;
+            connection.Close();
         }
 
     }

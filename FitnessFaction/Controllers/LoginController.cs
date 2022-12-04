@@ -28,6 +28,8 @@ namespace FitnessFaction.Controllers
         [HttpPost]
         public ActionResult Login(string username, string password)
         {
+
+      
             string trimmedUsername = username.Trim();
             string trimmedPassword = password.Trim();
 
@@ -43,6 +45,7 @@ namespace FitnessFaction.Controllers
                 HttpContext.Session.SetString("globalOrFollow", "global");
                 HttpContext.Session.SetString("feedType", "Fit");
                 HttpContext.Session.SetString("pfp", _azureRDBMS_Connection.getProfilePicture(trimmedUsername));
+                
                 //redirct to the home feed
                 return Redirect("/Home/" + trimmedUsername);
             }
@@ -100,7 +103,7 @@ namespace FitnessFaction.Controllers
                 SignUpViewModel parsedViewModel = null;
                 if (signUpObj.ProfilePicture == null)
                 {
-                    ViewData["profilePic"] = "images/defaultpfp.jpg";
+                    ViewData["profilePic"] = @"images/defaultpfp.jpg";
                 }
                 else
                 {

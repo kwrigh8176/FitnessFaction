@@ -13,10 +13,6 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession();
 
-
-builder.Services.AddAuthentication(IISServerDefaults.AuthenticationScheme);
-builder.Services.AddAuthorization();
-
 builder.Services.AddScoped<AzureRDBMS_Connection, AzureRDBMS_Connection>();
 
 builder.Services.AddRazorPages();
@@ -35,9 +31,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.UseSession();
 

@@ -1,4 +1,4 @@
-﻿@model List<Posts>
+﻿
 @{
     ViewBag.Title = "HomeFeed";
 }
@@ -58,8 +58,8 @@
     </div>
 </nav>
 <body>
-
     <!---POSTS ARE DISPLAYED HERE -->
+@model List<Posts> 
 @if (Model != null)
 {
     @foreach (var post in Model)

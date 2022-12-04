@@ -9,12 +9,12 @@ namespace FitnessFaction.Controllers
     
     public class HomeController : Controller
     {
-        private readonly AzureRDBMS_Connection RDBMS_Connection;
+        private readonly AzureRDBMS_Connection _RDBMS_Connection;
         private List<Posts> postList { get; set;}
 
-        public HomeController()
+        public HomeController(AzureRDBMS_Connection azureRDBMS_Connection)
         { 
-            RDBMS_Connection = new AzureRDBMS_Connection();
+            _RDBMS_Connection = azureRDBMS_Connection;
         }
 
         //The main feed is directed through this view
@@ -34,7 +34,7 @@ namespace FitnessFaction.Controllers
             //retrieve posts based on feedType
             if (globalOrFollow == "global")
             {
-                postList = RDBMS_Connection.getGlobalPosts(feedType);
+                postList = _RDBMS_Connection.getGlobalPosts(feedType);
 
             }
             else
