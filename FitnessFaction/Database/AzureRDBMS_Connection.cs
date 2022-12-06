@@ -1,9 +1,11 @@
 ﻿using FitnessFaction.Models;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualBasic.FileIO;
 using MongoDB.Driver;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace FitnessFaction.Database
@@ -31,7 +33,8 @@ namespace FitnessFaction.Database
         public void addUser(string email, string username)
         {
             connection.Open();
-            SqlCommand sql = new SqlCommand("INSERT INTO dbo.UserTable (Username, Email) Values (@username, @email);", connection);
+            string cmd = "INSERT INTO dbo.UserTable (Username, Email, followingCount, followerCount, following) Values (@username, @email, 0, 0, '')";
+            SqlCommand sql = new SqlCommand(cmd, connection);
             sql.Parameters.AddWithValue("@username", username);
             sql.Parameters.AddWithValue("@email", email);
             sql.ExecuteNonQuery();
@@ -72,6 +75,96 @@ namespace FitnessFaction.Database
             connection.Close();
             return posts;
         }
+
+        //going to be used to retrieve all posts depending on the post type
+        public List<Posts> getFollowingPosts(string feedType, string username)
+        {
+            connection.Open();
+
+            SqlCommand sql = new SqlCommand("Select following FROM dbo.UserTable WHERE Username = @Username", connection);
+            sql.Parameters.AddWithValue("@Username", username);
+            SqlDataReader reader = sql.ExecuteReader();
+
+            string following = "";
+            while (reader.Read())
+            {
+                following = reader.GetValue(0).ToString();
+            }
+            reader.Close();
+
+
+            int countAccounts = following.Count(f => f == ';');
+            string command = "";
+            if (countAccounts == 0)
+            {
+                return null;
+            }
+            else if (countAccounts == 1)
+            {
+                command = "Select Username, Tags, PostTitle, PostText, PostDate, pfpURL, ID FROM dbo.Posts WHERE feedType = @feedType AND Username = @Username";
+                sql = new SqlCommand(command, connection);
+                sql.Parameters.AddWithValue("@Username", following.Substring(0, following.IndexOf(";")));
+                sql.Parameters.AddWithValue("@feedType", feedType);
+
+                List<Posts> posts = new List<Posts>();
+                reader = sql.ExecuteReader();
+                while (reader.Read())
+                {
+                    Posts post = new Posts
+                    {
+                        UserName = reader.GetValue(0).ToString().Trim(),
+                        Tags = reader.GetValue(1).ToString().Trim(),
+                        PostTitle = reader.GetValue(2).ToString().Trim(),
+                        PostText = reader.GetValue(3).ToString().Trim(),
+                        PostDate = DateTime.Parse(reader.GetValue(4).ToString()),
+                        pfpURL = reader.GetValue(5).ToString().Trim(),
+                        ID = Convert.ToInt32(reader.GetValue(6).ToString())
+                    };
+                    posts.Add(post);
+                }
+                reader.Close();
+                return posts;
+            }
+            else
+            {
+                //accountName;accountName;
+                string[] usernames;
+                usernames = following.Split(';');
+
+                List<Posts> posts = new List<Posts>();
+                foreach (string user in usernames)
+                {
+                    sql = new SqlCommand("Select Username, Tags, PostTitle, PostText, PostDate, pfpURL, ID FROM dbo.Posts WHERE feedType = @feedType AND Username = @username", connection);
+                    sql.Parameters.AddWithValue("@feedType", feedType);
+                    sql.Parameters.AddWithValue("@username", user);
+                    reader = sql.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Posts post = new Posts
+                        {
+                            UserName = reader.GetValue(0).ToString().Trim(),
+                            Tags = reader.GetValue(1).ToString().Trim(),
+                            PostTitle = reader.GetValue(2).ToString().Trim(),
+                            PostText = reader.GetValue(3).ToString().Trim(),
+                            PostDate = DateTime.Parse(reader.GetValue(4).ToString()),
+                            pfpURL = reader.GetValue(5).ToString().Trim(),
+                            ID = Convert.ToInt32(reader.GetValue(6).ToString())
+                        };
+                        posts.Add(post);
+                    }
+                    reader.Close();
+                }
+                posts = posts.OrderByDescending(x => x.PostDate).ToList();
+
+                return posts;
+            }
+            
+            
+
+
+
+        }
+
         public List<Tags> pullTags()
         {
             connection.Open();

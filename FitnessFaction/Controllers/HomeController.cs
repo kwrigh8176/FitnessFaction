@@ -39,7 +39,7 @@ namespace FitnessFaction.Controllers
             }
             else
             {
-
+                postList = _RDBMS_Connection.getFollowingPosts(feedType, HttpContext.Session.GetString("username"));
             }
 
             //session user name is checked to prevent users from looking at different feeds

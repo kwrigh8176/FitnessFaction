@@ -104,6 +104,8 @@ namespace FitnessFaction.Controllers
                 if (signUpObj.ProfilePicture == null)
                 {
                     ViewData["profilePic"] = @"images/defaultpfp.jpg";
+                    parsedViewModel = signUpObj;
+                    signUpObj.imageUrl = @"images/defaultpfp.jpg";
                 }
                 else
                 {
