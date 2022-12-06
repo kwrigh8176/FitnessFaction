@@ -51,8 +51,7 @@
         }
 
 
-        <img src="/@ViewData["profilePic"].ToString()" class="nav-item img-thumbnail" width="50px" height="50px" />
-        
+        <a href="@Url.Action("Profile","ViewProfile", new {username = ViewData["username"].ToString()})"> <img src="/@ViewData["profilePic"].ToString()" class="nav-item img-thumbnail" width="50px" height="50px" /></a>
         @Html.Raw(TempData["messages"])
 
     </div>
@@ -64,11 +63,23 @@
 {
     @foreach (var post in Model)
     {
-        <div style="border-style: solid; ">
-            <img src = "/@post.pfpURL" width="50px" height="50px">
-                <p style="padding-left: 70px">@post.PostTitle</p><br>
-                <p style="padding-left: 100px">@post.PostText</p>
-        
+            <div>
+                <div style="border-style:inset">
+                    <a href="@Url.Action("Profile","ViewProfile", new {username = post.UserName})">
+                        <img src="/@post.pfpURL" width="50px" height="50px">
+                    </a>
+                    <span style="font-size: 24px;">@post.PostTitle</span> <br style="margin: 10px 0; display:block;">
+                    @if (post.PostText.Length > 40)
+                    {
+                        <span style="padding-left: 55px;">@post.PostText.Substring(0,40)...</span>
+                    }
+                    else
+                    {
+                        <span style="padding-left: 55px;">@post.PostText</span>
+                    }
+                   
+
+                </div>
         </div>
     }
 }

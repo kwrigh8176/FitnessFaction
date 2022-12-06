@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.AspNetCore.Routing.Constraints;
 using FitnessFaction.Database;
+using FitnessFaction;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
 builder.Services.AddScoped<AzureRDBMS_Connection, AzureRDBMS_Connection>();
+builder.Services.AddScoped<MongoDatabaseConnection, MongoDatabaseConnection>();
 
 builder.Services.AddRazorPages();
 
@@ -33,6 +35,25 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+
+
+app.MapControllerRoute(
+   name: "followAssistant",
+   pattern: "Profile/Follow",
+   defaults: new { controller = "ViewProfile", action = "Follow" }
+ );
+
+app.MapControllerRoute(
+   name: "unfollowAssistant",
+   pattern: "Profile/Unfollow",
+   defaults: new { controller = "ViewProfile", action = "Unfollow" }
+ );
+
+app.MapControllerRoute(
+   name: "Profile",
+   pattern: "Profile/{username}",
+   defaults: new { controller = "ViewProfile", action = "Profile" }
+ );
 
 app.MapControllerRoute(
    name: "createPost",

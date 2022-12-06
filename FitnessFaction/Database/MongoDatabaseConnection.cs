@@ -36,7 +36,6 @@ namespace FitnessFaction
                 Password = model.Password,
                 enrollmentDate = DateTime.Now
 
-                
             });
             AzureRDBMS_Connection temp = new AzureRDBMS_Connection();
             temp.addUser(model.Email, model.UserName);
@@ -95,6 +94,5 @@ namespace FitnessFaction
         }
 
 
-        
     }
 }

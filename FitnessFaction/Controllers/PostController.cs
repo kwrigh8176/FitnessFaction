@@ -14,6 +14,7 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
             List<Tags> getTags = azureConnect.pullTags();
             ViewData["tags"] = getTags;
             ViewData["postErrors"] = "";
+            ViewData["username"] = username;
 
             //session user name is checked to prevent users from looking at different feeds
             if (HttpContext.Session.GetString("username") == username)

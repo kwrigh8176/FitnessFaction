@@ -26,7 +26,6 @@ namespace FitnessFaction.Models
 
         public string imageUrl { get; set; }
 
-        public string FollowedAccounts { get; set; }
-
+       
     }
 }

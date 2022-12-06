@@ -35,13 +35,11 @@ namespace FitnessFaction
         [BsonElement("enrollmentDate")]
         public DateTime enrollmentDate { get; set; }
 
-        [BsonElement("followedAccounts")]
-        public string followedAccounts {get; set;}
-
     }
 
     public class Posts
     {
+        public int ID { get; set; }
         public string UserName { get; set; }
 
         public string Tags { get; set;}
@@ -71,5 +69,6 @@ namespace FitnessFaction
 
         public string ProfilePicture { get; set; }
     }
+
 
 }

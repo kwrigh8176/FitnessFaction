@@ -21,13 +21,13 @@ namespace FitnessFaction.Controllers
         public ActionResult HomeFeed(string username)
         {
 
-            string globalOrFollow = HttpContext.Session.GetString("globalOrFollow");
+            var globalOrFollow = HttpContext.Session.GetString("globalOrFollow");
             ViewData["globalOrFollow"] = globalOrFollow;
 
             ViewData["username"] = username;
 
-            string feedType = HttpContext.Session.GetString("feedType");
-            ViewData["feedType"] = feedType;
+            var feedType = HttpContext.Session.GetString("feedType");
+            ViewData["feedType"] = HttpContext.Session.GetString("feedType");
 
             ViewData["profilePic"] = HttpContext.Session.GetString("pfp");
 

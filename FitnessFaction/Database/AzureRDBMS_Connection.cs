@@ -1,7 +1,10 @@
 ﻿using FitnessFaction.Models;
 using Microsoft.VisualBasic.FileIO;
+using MongoDB.Driver;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.Linq;
+
 
 namespace FitnessFaction.Database
 {
@@ -41,8 +44,8 @@ namespace FitnessFaction.Database
             connection.Open();
 
             //command to retrieve all the posts in the post database
-            SqlCommand sql = new SqlCommand("Select Username, Tags, PostTitle, PostText, PostDate, feedType, pfpURL FROM dbo.Posts", connection);
-
+            SqlCommand sql = new SqlCommand("Select Username, Tags, PostTitle, PostText, PostDate, pfpURL, ID FROM dbo.Posts WHERE feedType = @feedType", connection);
+            sql.Parameters.AddWithValue("@feedType", feedType);
             //initialize the reader so we can read in all the posts
             SqlDataReader reader = sql.ExecuteReader();
             List<Posts> posts = new List<Posts>();
@@ -57,14 +60,13 @@ namespace FitnessFaction.Database
                     PostTitle = reader.GetValue(2).ToString().Trim(),
                     PostText = reader.GetValue(3).ToString().Trim(),
                     PostDate = DateTime.Parse(reader.GetValue(4).ToString()),
-                    feedType = reader.GetValue(5).ToString().Trim(),
-                    pfpURL = reader.GetValue(6).ToString().Trim()
+                    pfpURL = reader.GetValue(5).ToString().Trim(),
+                    ID = Convert.ToInt32(reader.GetValue(6).ToString())
                 };
                 posts.Add(post);
             }
 
-            //filter out based on feed type (diet or fitness)
-            posts = posts.Where(o => o.feedType == feedType).ToList();
+            posts = posts.OrderByDescending(x => x.PostDate).ToList();
 
 
             connection.Close();
@@ -127,8 +129,8 @@ namespace FitnessFaction.Database
             connection.Open();
             SqlCommand sql = new SqlCommand("Select Username, PFP FROM dbo.ProfilePictures WHERE Username = @username", connection);
             //initialize the reader so we can read in all the posts
-            SqlDataReader reader = sql.ExecuteReader();
             sql.Parameters.AddWithValue("@username", username);
+            SqlDataReader reader = sql.ExecuteReader();
             string imageUrl = "";
             //read all the posts in
             while (reader.Read())
@@ -140,9 +142,205 @@ namespace FitnessFaction.Database
                     
                 
             }
+            connection.Close();
             return imageUrl;
+        }
+
+        public List<Posts> getProfilePosts(string username)
+        {
+            connection.Open();
+
+            //command to retrieve all the posts in the post database
+            SqlCommand sql = new SqlCommand("Select Username, Tags, PostTitle, PostText, PostDate, pfpURL, ID FROM dbo.Posts WHERE Username = @Username", connection);
+            sql.Parameters.AddWithValue("@Username", username);
+            //initialize the reader so we can read in all the posts
+            SqlDataReader reader = sql.ExecuteReader();
+            List<Posts> posts = new List<Posts>();
+
+            //read all the posts in
+            while (reader.Read())
+            {
+                Posts post = new Posts
+                {
+                    UserName = reader.GetValue(0).ToString().Trim(),
+                    Tags = reader.GetValue(1).ToString().Trim(),
+                    PostTitle = reader.GetValue(2).ToString().Trim(),
+                    PostText = reader.GetValue(3).ToString().Trim(),
+                    PostDate = DateTime.Parse(reader.GetValue(4).ToString()),
+                    pfpURL = reader.GetValue(5).ToString().Trim(),
+                    ID = Convert.ToInt32(reader.GetValue(6).ToString())
+                };
+                posts.Add(post);
+            }
+
+            posts = posts.OrderByDescending(x => x.PostDate).ToList();
+
+
+            connection.Close();
+            return posts;
+        }
+
+         //add follow counts to profiles
+        public int[] getFollowCounts(string username)
+        {
+            connection.Open();
+
+            SqlCommand sql = new SqlCommand("Select followingCount, followerCount FROM dbo.UserTable WHERE Username = @Username", connection);
+            sql.Parameters.AddWithValue("@Username", username);
+
+            SqlDataReader reader = sql.ExecuteReader();
+
+            int[] counts = new int[2];
+            //read all the posts in
+            while (reader.Read())
+            {
+                counts[0] = Convert.ToInt32(reader.GetValue(0).ToString());
+                counts[1] = Convert.ToInt32(reader.GetValue(1).ToString());
+            }
+
+                    
+
+
+            connection.Close();
+
+            return new int[] { counts[0], counts[1] };
+
+            
+        }
+
+        public bool checkFollowing(string currentUser, string visitingUser)
+        {
+            connection.Open();
+
+            SqlCommand sql = new SqlCommand("Select following FROM dbo.UserTable WHERE Username = @Username", connection);
+            sql.Parameters.AddWithValue("@Username", visitingUser);
+
+            SqlDataReader reader = sql.ExecuteReader();
+
+            string followString = "";
+            //read all the posts in
+            while (reader.Read())
+            {
+                followString = reader.GetValue(0).ToString();
+
+            }
+            connection.Close();
+
+            if (followString.Contains(currentUser))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+          
+        }
+
+        public void follow(string currentUser, string visitingUser)
+        {
+            connection.Open();
+
+            SqlCommand sql = new SqlCommand("Select following, followingCount FROM dbo.UserTable WHERE Username = @Username", connection);
+            sql.Parameters.AddWithValue("@Username", visitingUser);
+
+            SqlDataReader reader = sql.ExecuteReader();
+
+            string followString = "";
+            int followCount = 0;
+            //read all the posts in
+            while (reader.Read())
+            {
+                followString = reader.GetValue(0).ToString();
+                followCount = Convert.ToInt32(reader.GetValue(1).ToString());
+            }
+            reader.Close();
+
+            //add the user they are following to the string
+            followString = followString + currentUser + ";";
+            followCount += 1;
+
+            //add the following count to the user who just followed, and the list of accounts they follow
+            sql = new SqlCommand("UPDATE UserTable SET [following] = @followString, followingCount = @followingCount WHERE Username = @visitingUser", connection);
+            sql.Parameters.AddWithValue("@followString", followString);
+            sql.Parameters.AddWithValue("@visitingUser", visitingUser);
+            sql.Parameters.AddWithValue("@followingCount", followCount);
+            sql.ExecuteNonQuery();
+
+
+            //get and update the current page's following count
+            sql = new SqlCommand("Select followerCount FROM dbo.UserTable WHERE Username = @currentUser", connection);
+            sql.Parameters.AddWithValue("@currentUser", currentUser);
+            reader = sql.ExecuteReader();
+            int followerCount = 0;
+            while (reader.Read())
+            {
+                followerCount = Convert.ToInt32(reader.GetValue(0).ToString());
+            }
+            reader.Close();
+
+            followerCount += 1;
+            sql = new SqlCommand("UPDATE UserTable SET followerCount = @followerCount  WHERE Username = @currentUser", connection);
+            sql.Parameters.AddWithValue("@followerCount", followerCount);
+            sql.Parameters.AddWithValue("@currentUser", currentUser);
+            sql.ExecuteNonQuery();
+
             connection.Close();
         }
 
+        public void unfollow(string currentUser, string visitingUser)
+        {
+            connection.Open();
+
+            SqlCommand sql = new SqlCommand("Select following, followingCount FROM dbo.UserTable WHERE Username = @Username", connection);
+            sql.Parameters.AddWithValue("@Username", visitingUser);
+
+            SqlDataReader reader = sql.ExecuteReader();
+
+            string followString = "";
+            int followCount = 0;
+            //read all the posts in
+            while (reader.Read())
+            {
+                followString = reader.GetValue(0).ToString();
+                followCount = Convert.ToInt32(reader.GetValue(1).ToString());
+            }
+            reader.Close();
+
+            //add the user they are unfollowing
+            followString = followString.Replace(currentUser + ";", "");
+            followCount -= 1;
+
+            //add the following count to the user who just followed, and the list of accounts they follow
+            sql = new SqlCommand("UPDATE UserTable SET [following] = @followString, followingCount = @followingCount WHERE Username = @visitingUser", connection);
+            sql.Parameters.AddWithValue("@followString", followString);
+            sql.Parameters.AddWithValue("@visitingUser", visitingUser);
+            sql.Parameters.AddWithValue("@followingCount", followCount);
+            sql.ExecuteNonQuery();
+
+
+            //get and update the current page's following count
+            sql = new SqlCommand("Select followerCount FROM dbo.UserTable WHERE Username = @currentUser", connection);
+            sql.Parameters.AddWithValue("@currentUser", currentUser);
+            reader = sql.ExecuteReader();
+            int followerCount = 0;
+            while (reader.Read())
+            {
+                followerCount = Convert.ToInt32(reader.GetValue(0).ToString());
+            }
+            reader.Close();
+
+            followerCount -= 1;
+            sql = new SqlCommand("UPDATE UserTable SET followerCount = @followerCount  WHERE Username = @currentUser", connection);
+            sql.Parameters.AddWithValue("@followerCount", followerCount);
+            sql.Parameters.AddWithValue("@currentUser", currentUser);
+            sql.ExecuteNonQuery();
+
+            connection.Close();
+        }
     }
+
+    
 }
