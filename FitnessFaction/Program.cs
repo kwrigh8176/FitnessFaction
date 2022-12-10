@@ -36,6 +36,11 @@ app.UseRouting();
 
 app.UseSession();
 
+app.MapControllerRoute(
+   name: "Post",
+   pattern: "Post/{id}",
+   defaults: new { controller = "Post", action = "ViewPost" }
+ );
 
 app.MapControllerRoute(
    name: "followAssistant",

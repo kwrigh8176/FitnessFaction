@@ -22,7 +22,7 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
             else
                 return RedirectToAction("ForbiddenError", "Error");
         }
-        
+
         //pass fields when submit button is hit
         [HttpPost]
         public ActionResult CreatePost(string PostTitle, string PostText, bool dietPost, bool fitnessPost, string Tags)
@@ -61,16 +61,24 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
 
             if (checksPassed)
             {
-                azureConnect.enterPost( PostTitle,  PostText, feedType, Tags, userName, HttpContext.Session.GetString("pfp"));
+                azureConnect.enterPost(PostTitle, PostText, feedType, Tags, userName, HttpContext.Session.GetString("pfp"));
                 TempData["messages"] = "<script>alert('Post succeeded!');</script>";
-                return RedirectToAction("HomeFeed","Home", new {username = userName });
+                return RedirectToAction("HomeFeed", "Home", new { username = userName });
             }
             else
             {
                 return RedirectToAction("CreatePost");
             }
 
-            
+
+        }
+
+        public ActionResult ViewPost(int id)
+        {
+            ViewData["username"] = HttpContext.Session.GetString("username");
+            Posts post = azureConnect.getSinglePosts(id);
+            List<Posts> posts = new List<Posts>() { post };
+            return View(posts);
         }
     }
 }

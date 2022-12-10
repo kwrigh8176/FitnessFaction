@@ -1,0 +1,31 @@
+﻿@using FitnessFaction
+@{
+
+}
+
+<a href="@Url.Action("HomeFeed", "Home", new {username = ViewData["username"].ToString()})" style="justify-content:center">&#x2190;Back to home</a>
+@model List<Posts>
+@foreach (var post in Model)
+{
+
+
+    <div>
+        <div style="border-style:inset">
+            <a href="@Url.Action("Profile","ViewProfile", new {username = post.UserName})" style="font-size: 24px; text-decoration: none;">
+                <img src="/@post.pfpURL" width="50px" height="50px">
+            </a><br>
+
+        <span style="font-size: 32px; color: #000; text-decoration: none;">
+                @post.PostTitle<br style>
+        </span><br>
+
+         <span style="font-size: 24px;">@post.PostText</span>
+                    
+
+               
+      </div>
+    </div>
+
+}
+        
+    

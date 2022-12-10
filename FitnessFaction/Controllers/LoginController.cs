@@ -21,7 +21,15 @@ namespace FitnessFaction.Controllers
 
         public ActionResult Login()
         {
-            return View();
+            if (HttpContext.Session.GetString("username") != null)
+            {
+                return Redirect("/Home/" + HttpContext.Session.GetString("username"));
+            }
+            else
+            {
+                return View();
+            }
+            
         }
 
         //if the credentials on the login page are submitted
@@ -60,6 +68,11 @@ namespace FitnessFaction.Controllers
 
         public ActionResult SignUp()
         {
+            if (HttpContext.Session.GetString("username") != null)
+            {
+                return Redirect("/Home/" + HttpContext.Session.GetString("username"));
+            }
+
             ViewData["UsernameStyle"] = "black";
             ViewData["EmailStyle"] = "black";
 

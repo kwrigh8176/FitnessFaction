@@ -433,6 +433,36 @@ namespace FitnessFaction.Database
 
             connection.Close();
         }
+
+        public Posts getSinglePosts(int postNum)
+        {
+            connection.Open();
+
+            //command to retrieve all the posts in the post database
+            SqlCommand sql = new SqlCommand("Select Username, Tags, PostTitle, PostText, PostDate, pfpURL, ID FROM dbo.Posts WHERE ID = @ID", connection);
+            sql.Parameters.AddWithValue("@ID", postNum);
+            //initialize the reader so we can read in all the posts
+            SqlDataReader reader = sql.ExecuteReader();
+            Posts post = null;
+            //read all the posts in
+            while (reader.Read())
+            {
+                post = new Posts
+                {
+                    UserName = reader.GetValue(0).ToString().Trim(),
+                    Tags = reader.GetValue(1).ToString().Trim(),
+                    PostTitle = reader.GetValue(2).ToString().Trim(),
+                    PostText = reader.GetValue(3).ToString().Trim(),
+                    PostDate = DateTime.Parse(reader.GetValue(4).ToString()),
+                    pfpURL = reader.GetValue(5).ToString().Trim(),
+                    ID = Convert.ToInt32(reader.GetValue(6).ToString())
+                };
+                
+            }
+
+            connection.Close();
+            return post;
+        }
     }
 
     
