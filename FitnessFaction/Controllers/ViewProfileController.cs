@@ -17,16 +17,22 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
         }
         public IActionResult Profile(string username)
         {
+            //currentUser is the profile currently being visited
             ViewData["currentUser"] = username;
+
+            //visitingUser is the user currently visiting the profile
             ViewData["visitingUser"] = HttpContext.Session.GetString("username");
 
+            //set route just for the back button
             HttpContext.Session.SetString("route", "profile");
             HttpContext.Session.SetString("currentUser", username);
 
+            //use different to decide if the follow button appears
             ViewData["different"] = false;
             if (ViewData["visitingUser"].ToString() != username)
             {
                 ViewData["different"] = true;
+                //check to see if the visiting user is following the current user (follow button will show as follow/unfollow depending on the case)
                 if (_RDBMS_Connection.checkFollowing(username, ViewData["visitingUser"].ToString()))
                 {
                     ViewData["following"] = true;
@@ -37,19 +43,22 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
 
                 }
             }
-
+            //retrieve the profile picture
             ViewData["profilePic"] = _RDBMS_Connection.getProfilePicture(username);
-            int[] followingCounts = _RDBMS_Connection.getFollowCounts(username);
 
+            //retrieve the following counts
+            int[] followingCounts = _RDBMS_Connection.getFollowCounts(username);
             ViewData["followedAccounts"] = followingCounts[0];
             ViewData["accountsFollowing"] = followingCounts[1];
 
+            //get all of the posts from the current profile
             List <Posts> posts = _RDBMS_Connection.getProfilePosts(username);
             return View(posts);
         }
 
         public IActionResult Follow(string currentUser, string visitingUser)
         {
+            //If the visiting user is NOT the current user, trigger a follow event
             if (currentUser != visitingUser)
             {
                 _RDBMS_Connection.follow(currentUser, visitingUser);
@@ -60,6 +69,7 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
 
         public IActionResult Unfollow(string currentUser, string visitingUser)
         {
+            //If the visiting user is NOT the current user, trigger an unfollow event
             if (currentUser != visitingUser)
             {
                 _RDBMS_Connection.unfollow(currentUser, visitingUser);

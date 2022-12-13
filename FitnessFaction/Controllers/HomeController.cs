@@ -22,16 +22,21 @@ namespace FitnessFaction.Controllers
         public ActionResult HomeFeed(string username)
         {
 
+            //for filtering between global and following posts
             var globalOrFollow = HttpContext.Session.GetString("globalOrFollow");
             ViewData["globalOrFollow"] = globalOrFollow;
 
+            //keep track of the username for pages contents
             ViewData["username"] = username;
 
+            //check if the feed is the fitness or diet feed
             var feedType = HttpContext.Session.GetString("feedType");
             ViewData["feedType"] = HttpContext.Session.GetString("feedType");
 
+            //retrieve the profile picture of the current user
             ViewData["profilePic"] = HttpContext.Session.GetString("pfp");
 
+            //simple setting for back buttons
             HttpContext.Session.SetString("route", "home");
 
             //retrieve posts based on feedType
@@ -46,6 +51,7 @@ namespace FitnessFaction.Controllers
                 postList = _RDBMS_Connection.getFollowingPosts(feedType, HttpContext.Session.GetString("username"));
             }
 
+            //set the list to empty if there are not any posts retrieved
             if (postList == null)
             {
                 postList = new List<Posts>();

@@ -14,6 +14,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession();
 
+//adding our databases so that we can get their context from the controllers
 builder.Services.AddScoped<AzureRDBMS_Connection, AzureRDBMS_Connection>();
 builder.Services.AddScoped<MongoDatabaseConnection, MongoDatabaseConnection>();
 
@@ -29,6 +30,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+//basic settings
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -36,6 +38,7 @@ app.UseRouting();
 
 app.UseSession();
 
+//a bunch of routing
 app.MapControllerRoute(
    name: "Post",
    pattern: "Post/{id}",

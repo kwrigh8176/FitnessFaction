@@ -21,6 +21,7 @@ namespace FitnessFaction.Controllers
 
         public ActionResult Login()
         {
+            //if the current user has already logged in, redirect them to the home page
             if (HttpContext.Session.GetString("username") != null)
             {
                 return Redirect("/Home/" + HttpContext.Session.GetString("username"));
@@ -37,7 +38,7 @@ namespace FitnessFaction.Controllers
         public ActionResult Login(string username, string password)
         {
 
-      
+            //clean the inputs
             string trimmedUsername = username.Trim();
             string trimmedPassword = password.Trim();
 
@@ -68,9 +69,11 @@ namespace FitnessFaction.Controllers
 
         public ActionResult SignUp()
         {
+            //reset styling variables
             ViewData["UsernameStyle"] = "black";
             ViewData["EmailStyle"] = "black";
 
+            //if the user has already logged in, redirect them back to their home page
             if (HttpContext.Session.GetString("username") != null)
             {
                 return Redirect("/Home/" + HttpContext.Session.GetString("username"));
@@ -82,13 +85,16 @@ namespace FitnessFaction.Controllers
         [HttpPost]
         public ActionResult SignUp(SignUpViewModel signUpObj)
         {
+            //reset styling variables
             ViewData["UsernameStyle"] = "black";
             ViewData["EmailStyle"] = "black";
 
+            //sanitize inputs
             string trimmedEmail = signUpObj.Email.Trim();
             string trimmedUsername = signUpObj.UserName.Trim();
             string trimmedPassword = signUpObj.Password.Trim();
 
+            //set the santized inputs back to the object
             signUpObj.Email = trimmedEmail;
             signUpObj.UserName = trimmedUsername;
             signUpObj.Password = trimmedPassword;
@@ -108,11 +114,16 @@ namespace FitnessFaction.Controllers
                 valid = false;
             }
 
-
+            //validate the credentials
             string credentialVerification = MongoDatabaseConnection.userCredentialsValid(trimmedEmail, trimmedUsername);
+
+            //if the credentials are valid
             if (credentialVerification == "Credentials ok." && valid)
             {
+                
                 SignUpViewModel parsedViewModel = null;
+
+                //if the user did NOT choose a profile picture on setup, use the default one provided
                 if (signUpObj.ProfilePicture == null)
                 {
                     ViewData["profilePic"] = @"images/defaultpfp.jpg";
@@ -121,6 +132,7 @@ namespace FitnessFaction.Controllers
                 }
                 else
                 {
+                    //upload the profile picture and set the user's profile picture to the one they uploaded
                     parsedViewModel = uploadFile(signUpObj);
                     ViewData["profilePic"] = parsedViewModel.imageUrl;
                 }
@@ -136,6 +148,7 @@ namespace FitnessFaction.Controllers
             }
             else
             {
+                //if the username or email fields were incorrect, change the styling of these fields
                 if (credentialVerification == "Email and username taken.")
                 {
                     ViewData["UsernameStyle"] = "red";
@@ -149,6 +162,8 @@ namespace FitnessFaction.Controllers
                 {
                     ViewData["EmailStyle"] = "red";
                 }
+
+                //then return the page with a viewbag message to alert the user
                 ViewBag.Message = "Credentials not accepted!";
                 return View(signUpObj);
             }
@@ -156,6 +171,7 @@ namespace FitnessFaction.Controllers
 
         }
 
+        //helper method to upload the user's image to the wwwroot folder
         private SignUpViewModel uploadFile(SignUpViewModel signUpObj)
         {
 

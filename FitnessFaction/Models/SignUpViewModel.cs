@@ -8,6 +8,7 @@ using System.Web;
 
 namespace FitnessFaction.Models
 {
+    //used for the sign up form
     public class SignUpViewModel
     {
         public string Id { get; set; }

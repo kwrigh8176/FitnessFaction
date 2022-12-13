@@ -81,6 +81,7 @@ namespace FitnessFaction.Database
         {
             connection.Open();
 
+            //first check the accounts that the current user is following
             SqlCommand sql = new SqlCommand("Select following FROM dbo.UserTable WHERE Username = @Username", connection);
             sql.Parameters.AddWithValue("@Username", username);
             SqlDataReader reader = sql.ExecuteReader();
@@ -92,13 +93,14 @@ namespace FitnessFaction.Database
             }
             reader.Close();
 
-
+            //count the amount of accounts that they are following to build the query
             int countAccounts = following.Count(f => f == ';');
             string command = "";
             if (countAccounts == 0)
             {
                 return null;
             }
+            //if they are following one account the query is simple
             else if (countAccounts == 1)
             {
                 command = "Select Username, Tags, PostTitle, PostText, PostDate, pfpURL, ID FROM dbo.Posts WHERE feedType = @feedType AND Username = @Username";
@@ -130,11 +132,13 @@ namespace FitnessFaction.Database
             }
             else
             {
-                //accountName;accountName;
+                //following string format would be like: accountName;accountName;
                 string[] usernames;
                 usernames = following.Split(';');
 
                 List<Posts> posts = new List<Posts>();
+
+                //execute a seperate query to get the post from each user (definitely a better way, but string manipulation was rough)
                 foreach (string user in usernames)
                 {
                     sql = new SqlCommand("Select Username, Tags, PostTitle, PostText, PostDate, pfpURL, ID FROM dbo.Posts WHERE feedType = @feedType AND Username = @username", connection);
@@ -157,6 +161,7 @@ namespace FitnessFaction.Database
                     }
                     reader.Close();
                 }
+                //sort post by time
                 posts = posts.OrderByDescending(x => x.PostDate).ToList();
 
                 return posts;
@@ -194,6 +199,7 @@ namespace FitnessFaction.Database
         }
         public void enterPost(string PostTitle, string PostText, string feedType, string Tags, string username, string pfpUrl)
         {
+            //simply insert the post into the post database
             connection.Open();
             SqlCommand sql = new("INSERT INTO dbo.Posts (Username, Tags, PostTitle, PostText, PostDate, feedType, pfpURL) Values (@username, @tags, @postTitle, @postText, @postDate, @feedType, @pfpURL);", connection);
 
@@ -212,6 +218,7 @@ namespace FitnessFaction.Database
 
         public void uploadProfilePicture(string username, string profilePicture)
         {
+            //simply upload the profile picture
             connection.Open();
             SqlCommand sql = new SqlCommand("INSERT INTO dbo.ProfilePictures (Username, PFP) Values (@username, @pfp);", connection);
             sql.Parameters.AddWithValue("@username", username);
@@ -281,6 +288,7 @@ namespace FitnessFaction.Database
         {
             connection.Open();
 
+            //just query the two follow count variables from the user table
             SqlCommand sql = new SqlCommand("Select followingCount, followerCount FROM dbo.UserTable WHERE Username = @Username", connection);
             sql.Parameters.AddWithValue("@Username", username);
 
@@ -308,6 +316,7 @@ namespace FitnessFaction.Database
         {
             connection.Open();
 
+            //get the string of followed users from the user table database
             SqlCommand sql = new SqlCommand("Select following FROM dbo.UserTable WHERE Username = @Username", connection);
             sql.Parameters.AddWithValue("@Username", visitingUser);
 
@@ -322,6 +331,7 @@ namespace FitnessFaction.Database
             }
             connection.Close();
 
+            //check to see if the current user is in the following string of the visiting user
             if (followString.Contains(currentUser))
             {
                 return true;
@@ -337,8 +347,10 @@ namespace FitnessFaction.Database
 
         public void follow(string currentUser, string visitingUser)
         {
+            //multi part process
             connection.Open();
 
+            //first check the following count of the visiting user
             SqlCommand sql = new SqlCommand("Select following, followingCount FROM dbo.UserTable WHERE Username = @Username", connection);
             sql.Parameters.AddWithValue("@Username", visitingUser);
 
@@ -346,7 +358,6 @@ namespace FitnessFaction.Database
 
             string followString = "";
             int followCount = 0;
-            //read all the posts in
             while (reader.Read())
             {
                 followString = reader.GetValue(0).ToString();
@@ -354,11 +365,11 @@ namespace FitnessFaction.Database
             }
             reader.Close();
 
-            //add the user they are following to the string
+            //add the current user's username to the visting user's following string. Also increment the following count.
             followString = followString + currentUser + ";";
             followCount += 1;
 
-            //add the following count to the user who just followed, and the list of accounts they follow
+            //update the table to reflect this change
             sql = new SqlCommand("UPDATE UserTable SET [following] = @followString, followingCount = @followingCount WHERE Username = @visitingUser", connection);
             sql.Parameters.AddWithValue("@followString", followString);
             sql.Parameters.AddWithValue("@visitingUser", visitingUser);
@@ -366,7 +377,7 @@ namespace FitnessFaction.Database
             sql.ExecuteNonQuery();
 
 
-            //get and update the current page's following count
+            //get the follower count of the current user
             sql = new SqlCommand("Select followerCount FROM dbo.UserTable WHERE Username = @currentUser", connection);
             sql.Parameters.AddWithValue("@currentUser", currentUser);
             reader = sql.ExecuteReader();
@@ -377,6 +388,7 @@ namespace FitnessFaction.Database
             }
             reader.Close();
 
+            //update the follower count of the current user
             followerCount += 1;
             sql = new SqlCommand("UPDATE UserTable SET followerCount = @followerCount  WHERE Username = @currentUser", connection);
             sql.Parameters.AddWithValue("@followerCount", followerCount);
@@ -390,6 +402,7 @@ namespace FitnessFaction.Database
         {
             connection.Open();
 
+            //first check the following count of the visiting user
             SqlCommand sql = new SqlCommand("Select following, followingCount FROM dbo.UserTable WHERE Username = @Username", connection);
             sql.Parameters.AddWithValue("@Username", visitingUser);
 
@@ -397,7 +410,7 @@ namespace FitnessFaction.Database
 
             string followString = "";
             int followCount = 0;
-            //read all the posts in
+            
             while (reader.Read())
             {
                 followString = reader.GetValue(0).ToString();
@@ -405,11 +418,11 @@ namespace FitnessFaction.Database
             }
             reader.Close();
 
-            //add the user they are unfollowing
+            //remove the current user from the following string of the visiting user. Also decrement the followingCount.
             followString = followString.Replace(currentUser + ";", "");
             followCount -= 1;
 
-            //add the following count to the user who just followed, and the list of accounts they follow
+            //update the visiting user's follow counts
             sql = new SqlCommand("UPDATE UserTable SET [following] = @followString, followingCount = @followingCount WHERE Username = @visitingUser", connection);
             sql.Parameters.AddWithValue("@followString", followString);
             sql.Parameters.AddWithValue("@visitingUser", visitingUser);
@@ -417,7 +430,7 @@ namespace FitnessFaction.Database
             sql.ExecuteNonQuery();
 
 
-            //get and update the current page's following count
+            //get the current page's follower count
             sql = new SqlCommand("Select followerCount FROM dbo.UserTable WHERE Username = @currentUser", connection);
             sql.Parameters.AddWithValue("@currentUser", currentUser);
             reader = sql.ExecuteReader();
@@ -428,6 +441,7 @@ namespace FitnessFaction.Database
             }
             reader.Close();
 
+            //update the current page's follower count
             followerCount -= 1;
             sql = new SqlCommand("UPDATE UserTable SET followerCount = @followerCount  WHERE Username = @currentUser", connection);
             sql.Parameters.AddWithValue("@followerCount", followerCount);

@@ -7,6 +7,7 @@ using System.Web;
 
 namespace FitnessFaction.Models
 {
+    //Used when creating a post
     public class PostViewModel
     {
 

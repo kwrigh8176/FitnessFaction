@@ -14,7 +14,6 @@ namespace FitnessFaction
         //Database handling all the user info is named "User"
         private readonly static string databaseName = "User";
 
-        SHA256 mySHA256 = SHA256.Create();
         public MongoDatabaseConnection()
         {
 

@@ -37,6 +37,7 @@ namespace FitnessFaction
 
     }
 
+    //Post object
     public class Posts
     {
         public int ID { get; set; }
@@ -55,6 +56,7 @@ namespace FitnessFaction
         public string pfpURL { get; set; }
     }
 
+    //Tag object
     public class Tags
     {
         public string TagName { get; set; }
@@ -63,12 +65,7 @@ namespace FitnessFaction
 
     }
 
-    public class profilePicture
-    {
-        public string Username { get; set; }
 
-        public string ProfilePicture { get; set; }
-    }
 
 
 }
