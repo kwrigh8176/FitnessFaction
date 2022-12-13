@@ -10,10 +10,10 @@ namespace FitnessFaction.Models
     public class PostViewModel
     {
 
-        [StringLength(40)]
+        [StringLength(40), Required(ErrorMessage = "A post title is requried.")]
         public string PostTitle { get; set; }
 
-        [StringLength(700)]
+        [StringLength(700), Required(ErrorMessage = "A post text is required.")]
         public string PostText { get; set; }
 
         public bool dietPost { get; set; }

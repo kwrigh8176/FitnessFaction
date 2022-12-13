@@ -73,18 +73,12 @@ namespace FitnessFaction.Controllers
                 return Redirect("/Home/" + HttpContext.Session.GetString("username"));
             }
 
-            ViewData["UsernameStyle"] = "black";
-            ViewData["EmailStyle"] = "black";
-
             return View(new SignUpViewModel());
         }
 
         [HttpPost]
         public ActionResult SignUp(SignUpViewModel signUpObj)
         {
-            ViewData["UsernameStyle"] = "black";
-            ViewData["EmailStyle"] = "black";
-
 
             string trimmedEmail = signUpObj.Email.Trim();
             string trimmedUsername = signUpObj.UserName.Trim();
@@ -135,27 +129,10 @@ namespace FitnessFaction.Controllers
 
                 return View("Login");
             }
-
             else
             {
-                if (credentialVerification == "Email and username taken.")
-                {
-                    ViewData["UsernameStyle"] = "red";
-                    ViewData["EmailStyle"] = "red";
-                }
-                else if (credentialVerification == "Username taken")
-                {
-                    ViewData["UsernameStyle"] = "red";
-                }
-                else
-                {
-                    ViewData["EmailStyle"] = "red";
-                }
-                ViewBag.Message = "Credentials not accepted!";
-                return View();
+                return View(new SignUpViewModel());
             }
-
-
 
            
         }

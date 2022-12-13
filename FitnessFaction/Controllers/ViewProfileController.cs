@@ -20,6 +20,9 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
             ViewData["currentUser"] = username;
             ViewData["visitingUser"] = HttpContext.Session.GetString("username");
 
+            HttpContext.Session.SetString("route", "profile");
+            HttpContext.Session.SetString("currentUser", username);
+
             ViewData["different"] = false;
             if (ViewData["visitingUser"].ToString() != username)
             {

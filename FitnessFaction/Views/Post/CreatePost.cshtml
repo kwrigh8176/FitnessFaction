@@ -28,13 +28,13 @@
 
         <!---PostTitle field-->
         <div class="form-outline mb-4">
-            @Html.TextBoxFor(T => T.PostTitle, new { @class = "form-control", id = "postTitle" })
+            @Html.TextBoxFor(T => T.PostTitle, new { @class = "form-control", id = "postTitle", @required=true })
             <label class="form-label" for="form2Example2">Post Title</label>
         </div>
 
         <!---PostTitle field-->
         <div class="form-outline mb-4">
-            @Html.TextAreaFor(T => T.PostText, new { @class = "form-control", id = "postText" })
+            @Html.TextAreaFor(T => T.PostText, new { @class = "form-control", id = "postText" , @required=true})
             <label class="form-label" for="form2Example2">Post Text</label>
         </div>
         <label>Post Type</label><br>

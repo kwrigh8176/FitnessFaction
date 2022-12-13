@@ -31,6 +31,8 @@ namespace FitnessFaction.Controllers
 
             ViewData["profilePic"] = HttpContext.Session.GetString("pfp");
 
+            HttpContext.Session.SetString("route", "home");
+
             //retrieve posts based on feedType
             if (globalOrFollow == "global")
             {

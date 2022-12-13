@@ -2,8 +2,17 @@
 @{
 
 }
+@if (ViewData["route"].ToString() == "home")
+{
+    <a href="@Url.Action("HomeFeed", "Home", new {username = ViewData["username"].ToString()})" style="justify-content:center">&#x2190;Back to home</a>
+}
+else
+{
 
-<a href="@Url.Action("HomeFeed", "Home", new {username = ViewData["username"].ToString()})" style="justify-content:center">&#x2190;Back to home</a>
+    <a href="@Url.Action("Profile", "ViewProfile", new {username =  ViewData["currentUser"].ToString()})" style="justify-content:center">&#x2190;Back to profile</a>
+    
+}
+
 @model List<Posts>
 @foreach (var post in Model)
 {

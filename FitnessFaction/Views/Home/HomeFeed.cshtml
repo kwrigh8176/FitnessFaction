@@ -17,7 +17,11 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between position:fixed">
     <p class="navbar-brand">Fitness Faction</p>
+    <input type="text" placeholder="Search..">
     <div class="navbar-nav me-auto" id="navbarNavAltMarkup">
+
+       
+
 
         @if (ViewData["feedType"].ToString() == "Fitness"){
             <a class="nav-item nav-link active mr-sm-2" href="@Url.Action("switchFitness","Home")">Fitness Feed <span class="sr-only">(current)</span></a>
@@ -37,7 +41,7 @@
 
         
 
-        <a class="nav-item nav-link mr-sm-2 " href="@Url.Action("createPost","Post", new {username = ViewData["username"].ToString()})">Create Post!</a>
+        <a class="nav-item nav-link mr-sm-2 " href="@Url.Action("CreatePost","Post", new {username = ViewData["username"].ToString()})">Create Post!</a>
 
         <a class="nav-item nav-link mr-sm-2" href="#">Settings</a>
 

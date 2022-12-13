@@ -58,18 +58,20 @@
                             <p class="lead fw-normal mb-1">Posts</p>
                             @foreach (var post in Model)
                             {
-                                <div class="p-4" style="background-color: #f8f9fa; margin-bottom: 25px;">
-                                    <p class="font-italic mb-1" style="font-size: 32px;">@post.PostTitle</p>
-                                    @if (post.PostText.Length > 40)
-                                    {
-                                        <p>@post.PostText.Substring(0,40)...</p>
-                                    }
-                                    else
-                                    {
-                                        <p>@post.PostText</p>
-                                    }
-                                    <p class="font-italic mb-0">@post.PostDate</p>
-                                </div>
+                                <a href="@Url.Action("ViewPost","Post", new {id = post.ID})" style="font-size: 24px; color: #000; text-decoration: none;">
+                                    <div class="p-4" style="background-color: #f8f9fa; margin-bottom: 25px;">
+                                        <p class="font-italic mb-1" style="font-size: 32px;">@post.PostTitle</p>
+                                        @if (post.PostText.Length > 40)
+                                        {
+                                            <p>@post.PostText.Substring(0,40)...</p>
+                                        }
+                                        else
+                                        {
+                                            <p>@post.PostText</p>
+                                        }
+                                        <p class="font-italic mb-0">@post.PostDate</p>
+                                    </div>
+                                </a>
                             }
                         </div>
                   

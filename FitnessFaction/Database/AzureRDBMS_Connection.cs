@@ -122,8 +122,11 @@ namespace FitnessFaction.Database
                     };
                     posts.Add(post);
                 }
+
                 reader.Close();
+                posts = posts.OrderByDescending(x => x.PostDate).ToList();
                 return posts;
+
             }
             else
             {
@@ -291,10 +294,10 @@ namespace FitnessFaction.Database
                 counts[1] = Convert.ToInt32(reader.GetValue(1).ToString());
             }
 
-                    
-
+                  
 
             connection.Close();
+
 
             return new int[] { counts[0], counts[1] };
 
