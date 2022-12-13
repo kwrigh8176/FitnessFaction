@@ -1,6 +1,7 @@
 ﻿using FitnessFaction.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Net;
 
 namespace FitnessFaction.Controllers
@@ -37,11 +38,17 @@ namespace FitnessFaction.Controllers
             if (globalOrFollow == "global")
             {
                 postList = _RDBMS_Connection.getGlobalPosts(feedType);
+               
 
             }
             else
             {
                 postList = _RDBMS_Connection.getFollowingPosts(feedType, HttpContext.Session.GetString("username"));
+            }
+
+            if (postList == null)
+            {
+                postList = new List<Posts>();
             }
 
             //session user name is checked to prevent users from looking at different feeds

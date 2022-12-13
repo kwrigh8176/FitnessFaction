@@ -72,5 +72,17 @@ namespace FITNESS_FACTION_.NET_CORE_CONVERSIONS.Controllers
 
 
         }
+
+        public ActionResult ViewPost(int id)
+        {
+            ViewData["username"] = HttpContext.Session.GetString("username");
+            ViewData["route"] = HttpContext.Session.GetString("route");
+            ViewData["currentUser"] = HttpContext.Session.GetString("currentUser");
+            Posts post = azureConnect.getSinglePosts(id);
+            List<Posts> posts = new List<Posts>() { post };
+            return View(posts);
+        }
+
+
     }
 }
