@@ -23,17 +23,36 @@
         <h1 style="text-align:center">Fitness Faction!</h1>
 
         <!-- Username input -->
-
+        @if (ViewData["UsernameStyle"].ToString() == "red")
+        {
             <div class="form-outline mb-4">
-                    @Html.TextBoxFor(T => T.UserName, null, new { @class = "form-control", @required = true})
+                @Html.TextBoxFor(T => T.UserName, null, new { @class = "form-control" , @style="border: 2px solid red;"})
                 <label class="form-label" for="username">Username</label>
             </div>
-
-        <!-- Email input -->
+        }
+        else
+        {
             <div class="form-outline mb-4">
-            @Html.TextBoxFor(T => T.Email, null, new { @class = "form-control" , @required = true})
+                @Html.TextBoxFor(T => T.UserName, null, new { @class = "form-control"})
+                <label class="form-label" for="username">Username</label>
+            </div>
+        }
+        <!-- Email input -->
+        @if (ViewData["EmailStyle"].ToString() == "red")
+        {
+
+            <div class="form-outline mb-4">
+                @Html.TextBoxFor(T => T.Email, null, new { @class = "form-control" , @style="border: 2px solid red;" })
                 <label class="form-label" for="email">Email address</label>
             </div>
+        }
+        else
+        {
+            <div class="form-outline mb-4">
+                @Html.TextBoxFor(T => T.Email, null, new { @class = "form-control" })
+                <label class="form-label" for="email">Email address</label>
+            </div>
+        }
 
 
         <!-- Password input -->
