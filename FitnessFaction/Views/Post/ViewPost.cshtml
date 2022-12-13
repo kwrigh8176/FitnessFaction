@@ -1,7 +1,10 @@
 ﻿@using FitnessFaction
-@{
 
-}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" />
+
 @if (ViewData["route"].ToString() == "home")
 {
     <a href="@Url.Action("HomeFeed", "Home", new {username = ViewData["username"].ToString()})" style="justify-content:center">&#x2190;Back to home</a>
@@ -13,28 +16,31 @@ else
     
 }
 
+
+        
 @model List<Posts>
 @foreach (var post in Model)
-{
-
-
-    <div>
-        <div style="border-style:inset">
-            <a href="@Url.Action("Profile","ViewProfile", new {username = post.UserName})" style="font-size: 24px; text-decoration: none;">
-                <img src="/@post.pfpURL" width="50px" height="50px">
-            </a><br>
-
-        <span style="font-size: 32px; color: #000; text-decoration: none;">
-                @post.PostTitle<br style>
-        </span><br>
-
-         <span style="font-size: 24px;">@post.PostText</span>
-                    
-
-               
-      </div>
+{    
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" />
+<div class="container">
+   
+    <div class="well">
+        <div class="media">
+                    <a href="@Url.Action("Profile","ViewProfile", new {username = post.UserName})" style="font-size: 24px; text-decoration: none;" class="pull-left">
+                        <img class="media-object" src="/@post.pfpURL" width="100px" height="100px">
+                    </a>
+            <div class="media-body">
+                <h4 class="media-heading">@post.PostTitle</h4>
+                    <p class="text-left">By @post.UserName</p>
+                <p>
+                        @post.PostText
+                </p>
+                <ul class="list-inline list-unstyled">
+                    <li><span><i class="glyphicon glyphicon-calendar"></i>@post.PostDate.ToString("MM/dd/yyyy hh:mm tt")</span></li>
+                    <li>|</li>
+                </ul>
+            </div>
+        </div>
     </div>
-
+ </div>
 }
-        
-    

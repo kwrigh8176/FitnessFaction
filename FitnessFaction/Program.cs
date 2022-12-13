@@ -43,14 +43,6 @@ app.MapControllerRoute(
  );
 
 app.MapControllerRoute(
-   name: "Post",
-   pattern: "Post/{id}",
-   defaults: new { controller = "Post", action = "ViewPost" }
- );
-
-
-
-app.MapControllerRoute(
    name: "followAssistant",
    pattern: "Profile/Follow",
    defaults: new { controller = "ViewProfile", action = "Follow" }

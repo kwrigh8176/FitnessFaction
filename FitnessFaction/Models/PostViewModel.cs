@@ -13,7 +13,7 @@ namespace FitnessFaction.Models
         [StringLength(40), Required(ErrorMessage = "A post title is requried.")]
         public string PostTitle { get; set; }
 
-        [StringLength(700), Required(ErrorMessage = "A post text is required.")]
+        [StringLength(1000), Required(ErrorMessage = "A post text is required.")]
         public string PostText { get; set; }
 
         public bool dietPost { get; set; }

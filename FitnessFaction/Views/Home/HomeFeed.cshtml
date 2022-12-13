@@ -12,10 +12,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" />
 
 
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between position:fixed">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between navbar-fixed-top" style="overflow: hidden;">
     <p class="navbar-brand">Fitness Faction</p>
     <input type="text" placeholder="Search..">
     <div class="navbar-nav me-auto" id="navbarNavAltMarkup">
@@ -51,7 +54,7 @@
             <a href="@Url.Action("switchGlobalOrFollow","Home")" class="btn btn-outline-success my-2 my-sm-">View following posts!</a>
         }
         else {
-        <a href="@Url.Action("switchGlobalOrFollow","Home")" class="btn btn-outline-success my-2 my-sm-">View global posts!</a>
+            <a href="@Url.Action("switchGlobalOrFollow","Home")" class="btn btn-outline-success my-2 my-sm-">View global posts!</a>
         }
 
 
@@ -61,36 +64,46 @@
     </div>
 </nav>
 <body>
+    @{
+        int counter = 0;
+        string spacing = "70px";
+    }
     <!---POSTS ARE DISPLAYED HERE -->
-@model List<Posts> 
-@if (Model != null)
-{
+    @model List<Posts>
     @foreach (var post in Model)
     {
-            <div>
-                <div style="border-style:inset">
-                    <a href="@Url.Action("Profile","ViewProfile", new {username = post.UserName})" style="font-size: 24px; text-decoration: none;">
-                        <img src="/@post.pfpURL" width="50px" height="50px">
-                    </a>
-
-                    <a href="@Url.Action("ViewPost","Post", new {id = post.ID})" style="font-size: 24px; color: #000; text-decoration: none;">
-                        @post.PostTitle<br style="margin: 10px 0; display:block;">
-                    @if (post.PostText.Length > 55)
-                    {
-                        <span style="padding-left: 55px;">@post.PostText.Substring(0,55)...</span>
-                    }
-                    else
-                    {
-                        <span style="padding-left: 55px;">@post.PostText</span>
-                    }
-
-                    </a>
-                </div>
-        </div>
-    }
-}
-
     
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" />
+            
+           @if (counter != 0)
+           {
+                spacing = "20px";
+           }
+           
+             <div class="container" style="margin-top: @spacing;">
+
+                <div class="well">
+                    <div class="media">
+                        <a href="@Url.Action("Profile","ViewProfile", new {username = post.UserName})" style="font-size: 24px; text-decoration: none;" class="pull-left">
+                            <img class="media-object" src="/@post.pfpURL" width="100px" height="100px">
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">@post.PostTitle</h4>
+                            <p class="text-left">By @post.UserName</p>
+                            <p>
+                                @post.PostText
+                            </p>
+                            <ul class="list-inline list-unstyled">
+                                <li><span><i class="glyphicon glyphicon-calendar"></i>@post.PostDate.ToString("MM/dd/yyyy hh:mm tt")</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            counter++;
+    }
+
+        
 
 
 </body>
